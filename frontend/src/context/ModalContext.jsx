@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 const ModalContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useClient = () => useContext(ModalContext);
 
 export const ClientProvider = ({ children }) => {
