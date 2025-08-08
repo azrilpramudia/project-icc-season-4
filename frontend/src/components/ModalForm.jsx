@@ -18,29 +18,55 @@ const ModalForm = () => {
   const [status, setStatus] = useState(false);
 
   useEffect(() => {
-    setName("");
-    setEmail("");
-    setJob("");
-    setRate("");
-    setStatus(false);
-  }, [isModalOpen]);
+    if (isModalOpen && modalMode === "edit" && selectedClient) {
+      setName(selectedClient.name ?? "");
+      setEmail(selectedClient.email ?? "");
+      setJob(selectedClient.job ?? "");
+      setRate(String(selectedClient.rate ?? 0));
+      setStatus(Boolean(selectedClient.status));
+    } else {
+      setName("");
+      setEmail("");
+      setJob("");
+      setRate("");
+      setStatus(false);
+    }
+  }, [isModalOpen, modalMode, selectedClient]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const clientData = {
-      id: selectedClient?.id,
-      name,
-      email,
-      job,
-      rate: parseInt(rate),
-      status,
+
+    if (modalMode === "edit" && selectedClient) {
+      const original = selectedClient;
+      const payload = {};
+
+      if (name !== (original.name ?? "")) payload.name = name;
+      if (email !== (original.email ?? "")) payload.email = email;
+      if (job !== (original.job ?? "")) payload.job = job;
+      if (String(original.rate ?? "") !== rate)
+        payload.rate = Number(rate) || 0;
+      if (Boolean(original.status) !== Boolean(status))
+        payload.status = Boolean(status);
+
+      if (Object.keys(payload).length === 0) {
+        closeModal();
+        return;
+      }
+
+      await updateClient(original.id, payload);
+      return;
+    }
+
+    // Untuk Add Client
+    const newClient = {
+      ...(name ? { name } : {}),
+      ...(email ? { email } : {}),
+      ...(job ? { job } : {}),
+      ...(rate !== "" ? { rate: Number(rate) || 0 } : {}),
+      ...(typeof status === "boolean" ? { status } : {}),
     };
 
-    if (modalMode === "edit") {
-      updateClient(clientData);
-    } else {
-      addClient(clientData);
-    }
+    await addClient(newClient);
   };
 
   return (
@@ -49,6 +75,7 @@ const ModalForm = () => {
         <h3 className="font-bold text-lg py-4">
           {modalMode === "edit" ? "Edit Client" : "Client Details"}
         </h3>
+
         <form onSubmit={handleSubmit}>
           <fieldset className="fieldset">
             <legend className="fieldset-legend text-start">Name</legend>
@@ -60,16 +87,18 @@ const ModalForm = () => {
               onChange={(e) => setName(e.target.value)}
             />
           </fieldset>
+
           <fieldset className="fieldset">
             <legend className="fieldset-legend text-start">Email</legend>
             <input
-              type="text"
+              type="email"
               className="input"
               placeholder="Type here"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </fieldset>
+
           <fieldset className="fieldset">
             <legend className="fieldset-legend text-start">Job</legend>
             <input
@@ -92,6 +121,7 @@ const ModalForm = () => {
                 onChange={(e) => setRate(e.target.value)}
               />
             </label>
+
             <select
               value={status ? "Active" : "Inactive"}
               className="select"
@@ -102,6 +132,7 @@ const ModalForm = () => {
             </select>
           </div>
 
+          {/* Close & Submit */}
           <button
             type="button"
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -109,6 +140,7 @@ const ModalForm = () => {
           >
             ✕
           </button>
+
           <button className="btn btn-success" type="submit">
             {modalMode === "edit" ? "Save Changes" : "Add Client"}
           </button>

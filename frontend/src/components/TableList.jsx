@@ -35,7 +35,7 @@ const TableList = () => {
         <table className="w-full table-auto text-left rounded-lg overflow-hidden">
           <thead className="bg-gray-800 text-gray-300">
             <tr>
-              <th className="px-4 py-3">#</th>
+              <th className="px-4 py-3">ID</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Job</th>
@@ -72,7 +72,7 @@ const TableList = () => {
                   </button>
                   <button
                     onClick={() => deleteClient(client.id)}
-                    className="bg-pink-400 hover:bg-pink-500 text-black font-semibold px-3 py-1 rounded-md"
+                    className="bg-red-400 hover:bg-red-500 text-black font-semibold px-3 py-1 rounded-md"
                   >
                     Delete
                   </button>

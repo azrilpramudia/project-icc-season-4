@@ -48,29 +48,34 @@ export const ClientProvider = ({ children }) => {
     }
   };
 
+  // Create Client
   const addClient = async (payload) => {
     await api.post("/api/clients", payload);
     await fetchClients(search);
     closeModal();
   };
 
-  const updateClient = async (updated) => {
-    await api.patch(`/api/clients/${updated.id}`, updated);
+  // Update Client
+  const updateClient = async (id, payloadPartial) => {
+    await api.patch(`/api/clients/${id}`, payloadPartial);
     await fetchClients(search);
     closeModal();
   };
 
+  // Delete Client
   const deleteClient = async (id) => {
     await api.delete(`/api/clients/${id}`);
     await fetchClients(search);
   };
 
+  // Open modal for editing
   const openEditModal = (client) => {
     setSelectedClient(client);
     setModalMode("edit");
     setIsModalOpen(true);
   };
 
+  // Open modal for adding a new client
   const openAddModal = () => {
     setSelectedClient(null);
     setModalMode("add");
