@@ -1,7 +1,14 @@
 import { useClient } from "../context/ModalContext";
 
 const TableList = () => {
-  const { clients, openAddModal, openEditModal } = useClient();
+  const {
+    clients,
+    openAddModal,
+    openEditModal,
+    deleteClient,
+    search,
+    setSearch,
+  } = useClient();
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
@@ -11,6 +18,8 @@ const TableList = () => {
           <input
             type="text"
             placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="bg-gray-800 border border-gray-600 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
@@ -61,7 +70,10 @@ const TableList = () => {
                   >
                     Update
                   </button>
-                  <button className="bg-pink-400 hover:bg-pink-500 text-black font-semibold px-3 py-1 rounded-md">
+                  <button
+                    onClick={() => deleteClient(client.id)}
+                    className="bg-pink-400 hover:bg-pink-500 text-black font-semibold px-3 py-1 rounded-md"
+                  >
                     Delete
                   </button>
                 </td>
